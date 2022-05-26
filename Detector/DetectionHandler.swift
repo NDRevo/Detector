@@ -16,14 +16,19 @@ class DetectionHandler {
     var isFace: Bool = false
     var isHuman: Bool = false
 
-    private func isImageFace(imageURL: URL, directoryURL: URL, orientation: CGImagePropertyOrientation){
+    private func isImageFace(imageURL: URL, directoryURL: URL, orientation: CGImagePropertyOrientation, _ dHumanCM: Bool, _ dAnimalCM: Bool){
         let imageRequestHandler = VNImageRequestHandler(url: imageURL, orientation: orientation, options: [:])
         
+        var requests: [VNImageBasedRequest] = []
         let detectHumanRectanglesRequest    = VNDetectHumanRectanglesRequest(completionHandler: self.handleHumanDetectionRequest)
         let detectFaceRectanglesRequest     = VNDetectFaceRectanglesRequest(completionHandler: self.handleFaceDetectionRequest)
         
+        if dHumanCM {
+            requests.append(detectHumanRectanglesRequest)
+        }
+
         do {
-            try imageRequestHandler.perform([detectHumanRectanglesRequest, detectFaceRectanglesRequest])
+            try imageRequestHandler.perform(requests)
             if isFace || isHuman{
                 numOfFaceImagesDetected += 1
                 try FileManager.default.moveItem(atPath: imageURL.path, toPath: directoryURL.path + "/" + (imageURL.path.components(separatedBy: "/").last ?? ""))
@@ -63,9 +68,9 @@ class DetectionHandler {
         }
     }
 
-    func runDetectImages(_ sourcePath: String, _ destinationPath: String, _ folderName: String) {
+    func runDetectImages(_ sourcePath: String, _ destinationPath: String, _ folderName: String, _ dHumanCM: Bool, _ dAnimalCM: Bool) {
         var isDir:ObjCBool = true
-        
+
         if FileManager.default.fileExists(atPath: sourcePath, isDirectory: &isDir) {
 
                 let newDirectoryPath =  destinationPath + "/"+folderName
@@ -81,7 +86,7 @@ class DetectionHandler {
 
                 for file in FileManager.default.listFiles(path: sourcePath){
                     if let _ = NSImage(contentsOfFile: file.path){
-                        isImageFace(imageURL: URL(fileURLWithPath: file.path), directoryURL: URL(fileURLWithPath: newDirectoryPath),  orientation: .up)
+                        isImageFace(imageURL: URL(fileURLWithPath: file.path), directoryURL: URL(fileURLWithPath: newDirectoryPath), orientation: .up, dHumanCM, dAnimalCM)
                     } else {
                         numOfNonImageFiles += 1
                     }

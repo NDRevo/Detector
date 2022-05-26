@@ -17,20 +17,18 @@ struct HomeView: View {
     @State var destinationFolderPath: String = ""
     @State var showDocumentPicker: Bool = false
     @State var createFolderInSourcePath: Bool = true
-    @State var destinationFolderName: String = ""
+    @State var destinationFolderName: String = "Detected Images"
 
-    @State var detectFaceCheckMark: Bool = false
-    @State var detectBodyCheckMark: Bool = false
-    @State var detectAnimalCheckMark: Bool = false
+    @State var detectHumanCM: Bool = false
+    @State var detectAnimalCM: Bool = false
 
     @FocusState private var folderField: Field?
 
     var body: some View {
 
         VStack {
-            CheckBoxesView(detectFaceCM: $detectFaceCheckMark,
-                           detectBodyCM: $detectBodyCheckMark,
-                           detectAnimalCM: $detectAnimalCheckMark)
+            CheckBoxesView(detectHumanCM: $detectHumanCM,
+                           detectAnimalCM: $detectAnimalCM)
 
             VStack(alignment: .leading, spacing: 20) {
 
@@ -51,7 +49,17 @@ struct HomeView: View {
 
             Button {
                 let detectionHandler = DetectionHandler()
-                detectionHandler.runDetectImages(sourceFolderPath, destinationFolderPath, destinationFolderName)
+                if createFolderInSourcePath {
+                    destinationFolderPath = sourceFolderPath
+                }
+                if destinationFolderName.isEmpty {
+                    destinationFolderName = "Detected Images"
+                }
+                detectionHandler.runDetectImages(sourceFolderPath,
+                                                 destinationFolderPath,
+                                                 destinationFolderName,
+                                                 detectHumanCM,
+                                                 detectAnimalCM)
             } label: {
                 Text("Detect Images")
             }
@@ -72,26 +80,21 @@ struct HomeView_Previews: PreviewProvider {
 
 struct CheckBoxesView: View {
 
-    @Binding var detectFaceCM: Bool
-    @Binding var detectBodyCM: Bool
+    @Binding var detectHumanCM: Bool
     @Binding var detectAnimalCM: Bool
 
     var body: some View {
-        HStack{
-            Toggle(isOn: $detectFaceCM) {
-                Text("Detect Faces")
+        HStack(alignment: .center){
+            Spacer()
+            Toggle(isOn: $detectHumanCM) {
+                Text("Detect Humans")
             }
             .toggleStyle(.checkbox)
-            Spacer()
-            Toggle(isOn: $detectBodyCM) {
-                Text("Detect Human Bodies")
-            }
-            .toggleStyle(.checkbox)
-            Spacer()
             Toggle(isOn: $detectAnimalCM) {
                 Text("Detect Animals")
             }
             .toggleStyle(.checkbox)
+            Spacer()
         }
         .padding()
         .background {
@@ -115,9 +118,12 @@ struct UserInputSettingView: View {
                 Text("Create destination folder in source directory?")
             }
             .toggleStyle(.checkbox)
-            TextField("Destination Folder Name", text: $destinationFolderName)
-                .textFieldStyle(.roundedBorder)
-                .focused(folderField , equals: .destinationFolderNameField)
+            HStack{
+                Text("Destination Folder Name")
+                TextField("Folder Name", text: $destinationFolderName)
+                    .textFieldStyle(.roundedBorder)
+                    .focused(folderField , equals: .destinationFolderNameField)
+            }
         }
     }
 }
@@ -140,7 +146,7 @@ struct FolderPathView: View {
                         folderPath = documentPicker.runPicker()
                     }
 
-                TextField("Path", text: $folderPath)
+                TextField("Pathname", text: $folderPath)
                     .disabled(true)
                     .textFieldStyle(.roundedBorder)
             }
