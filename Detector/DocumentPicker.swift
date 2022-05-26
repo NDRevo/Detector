@@ -18,7 +18,7 @@ class DocumentPicker {
         dialog.canChooseDirectories     = true
         dialog.canChooseFiles           = false
     }
-    
+
     func runPicker() -> String {
         configurePicker()
         if (dialog.runModal() ==  NSApplication.ModalResponse.OK) {

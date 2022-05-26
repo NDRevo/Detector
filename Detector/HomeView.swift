@@ -50,7 +50,8 @@ struct HomeView: View {
             .animation(.default, value: createFolderInSourcePath)
 
             Button {
-                print("Something")
+                let detectionHandler = DetectionHandler()
+                detectionHandler.runDetectImages(sourceFolderPath, destinationFolderPath, destinationFolderName)
             } label: {
                 Text("Detect Images")
             }
