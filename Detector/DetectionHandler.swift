@@ -10,33 +10,38 @@ import Vision
 import AppKit
 
 class DetectionHandler {
-    var numOfFaceImagesDetected = 0
+    var numOfImagesDetected = 0
     var numOfNoResultImages = 0
     var numOfNonImageFiles = 0
-    var isFace: Bool = false
-    var isHuman: Bool = false
+    var isHuman: Bool   = false
+    var isAnimal: Bool  = false
 
     private func isImageFace(imageURL: URL, directoryURL: URL, orientation: CGImagePropertyOrientation, _ dHumanCM: Bool, _ dAnimalCM: Bool){
         let imageRequestHandler = VNImageRequestHandler(url: imageURL, orientation: orientation, options: [:])
         
         var requests: [VNImageBasedRequest] = []
         let detectHumanRectanglesRequest    = VNDetectHumanRectanglesRequest(completionHandler: self.handleHumanDetectionRequest)
-        let detectFaceRectanglesRequest     = VNDetectFaceRectanglesRequest(completionHandler: self.handleFaceDetectionRequest)
-        
+        //let detectFaceRectanglesRequest     = VNDetectFaceRectanglesRequest(completionHandler: self.handleFaceDetectionRequest)
+        let detectAnimalRectanglesRequest   = VNRecognizeAnimalsRequest(completionHandler: self.handleRecognizeAnimalRequest)
+
         if dHumanCM {
             requests.append(detectHumanRectanglesRequest)
+        }
+        if dAnimalCM {
+            requests.append(detectAnimalRectanglesRequest)
         }
 
         do {
             try imageRequestHandler.perform(requests)
-            if isFace || isHuman{
-                numOfFaceImagesDetected += 1
+            if isHuman || isAnimal{
+                numOfImagesDetected += 1
                 try FileManager.default.moveItem(atPath: imageURL.path, toPath: directoryURL.path + "/" + (imageURL.path.components(separatedBy: "/").last ?? ""))
-                isFace = false
-                isHuman = false
+                isHuman     = false
+                isAnimal    = false
             }
-        } catch let error as NSError {
+        } catch {
            //Failed to perform image request
+            print(error)
         }
     }
 
@@ -54,14 +59,14 @@ class DetectionHandler {
         }
     }
 
-    private func handleFaceDetectionRequest(request: VNRequest?, error: Error?){
+    private func handleRecognizeAnimalRequest(request: VNRequest?, error: Error?){
         if let requestError = error as? NSError{
             print(requestError)
             return
         }
-        if let results = request?.results as? [VNFaceObservation] {
+        if let results = request?.results as? [VNRecognizedObjectObservation] {
             for _ in results {
-                isFace = true
+                isAnimal = true
                 return
             }
             numOfNoResultImages += 1
