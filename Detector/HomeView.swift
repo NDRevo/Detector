@@ -13,57 +13,41 @@ enum Field: Hashable {
 
 struct HomeView: View {
 
-    @State var sourceFolderPath: String = ""
-    @State var destinationFolderPath: String = ""
-    @State var showDocumentPicker: Bool = false
-    @State var createFolderInSourcePath: Bool = true
-    @State var destinationFolderName: String = "Detected Images"
-
-    @State var detectHumanCM: Bool = false
-    @State var detectAnimalCM: Bool = false
-
+    @StateObject private var viewModel = HomeViewModel()
     @FocusState private var folderField: Field?
 
     var body: some View {
-
         VStack {
-            CheckBoxesView(detectHumanCM: $detectHumanCM,
-                           detectAnimalCM: $detectAnimalCM)
+            CheckBoxesView(detectHumanCM: $viewModel.detectHumanCM, detectAnimalCM: $viewModel.detectAnimalCM)
 
             VStack(alignment: .leading, spacing: 20) {
 
-                FolderPathView(folderPath: $sourceFolderPath,
-                               titlePathName: "Source Folder Path")
+                FolderPathView(folderPath: $viewModel.sourceFolderPath, titlePathName: "Source Folder Path")
 
-                UserInputSettingView(createFolderInSourcePath: $createFolderInSourcePath,
-                                     destinationFolderName: $destinationFolderName,
+                UserInputSettingView(createFolderInSourcePath: $viewModel.createFolderInSourcePath,
+                                     destinationFolderName: $viewModel.destinationFolderName,
                                      folderField: $folderField)
 
-                if(!createFolderInSourcePath){
-                    FolderPathView(folderPath: $destinationFolderPath,
+                if(!viewModel.createFolderInSourcePath){
+                    FolderPathView(folderPath: $viewModel.destinationFolderPath,
                                    titlePathName: "Destination Folder Path")
                 }
             }
             .padding()
-            .animation(.default, value: createFolderInSourcePath)
+            .animation(.default, value: viewModel.createFolderInSourcePath)
 
             Button {
                 let detectionHandler = DetectionHandler()
-                if createFolderInSourcePath {
-                    destinationFolderPath = sourceFolderPath
-                }
-                if destinationFolderName.isEmpty {
-                    destinationFolderName = "Detected Images"
-                }
-                detectionHandler.runDetectImages(sourceFolderPath,
-                                                 destinationFolderPath,
-                                                 destinationFolderName,
-                                                 detectHumanCM,
-                                                 detectAnimalCM)
+                viewModel.checkSubmission()
+                detectionHandler.runDetectImages(viewModel.sourceFolderPath, viewModel.destinationFolderPath,
+                                                 viewModel.destinationFolderName,
+                                                 viewModel.detectHumanCM, viewModel.detectAnimalCM)
             } label: {
                 Text("Detect Images")
             }
-            .animation(.linear, value: createFolderInSourcePath)
+            .buttonStyle(.borderedProminent)
+            .tint(.blue)
+            .animation(.linear, value: viewModel.createFolderInSourcePath)
 
             Spacer()
         }

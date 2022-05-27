@@ -13,6 +13,7 @@
 		56177157283E790600B997F7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56177156283E790600B997F7 /* HomeView.swift */; };
 		56177159283E7D5B00B997F7 /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56177158283E7D5B00B997F7 /* DocumentPicker.swift */; };
 		5617715B283FBF8F00B997F7 /* DetectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5617715A283FBF8F00B997F7 /* DetectionHandler.swift */; };
+		5617715D284056BD00B997F7 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5617715C284056BD00B997F7 /* HomeViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		56177156283E790600B997F7 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		56177158283E7D5B00B997F7 /* DocumentPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
 		5617715A283FBF8F00B997F7 /* DetectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionHandler.swift; sourceTree = "<group>"; };
+		5617715C284056BD00B997F7 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				56177147283E764500B997F7 /* DetectorApp.swift */,
+				5617715C284056BD00B997F7 /* HomeViewModel.swift */,
 				56177156283E790600B997F7 /* HomeView.swift */,
 				5617715A283FBF8F00B997F7 /* DetectionHandler.swift */,
 				56177158283E7D5B00B997F7 /* DocumentPicker.swift */,
@@ -148,6 +151,7 @@
 				56177157283E790600B997F7 /* HomeView.swift in Sources */,
 				56177159283E7D5B00B997F7 /* DocumentPicker.swift in Sources */,
 				5617715B283FBF8F00B997F7 /* DetectionHandler.swift in Sources */,
+				5617715D284056BD00B997F7 /* HomeViewModel.swift in Sources */,
 				56177148283E764500B997F7 /* DetectorApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
