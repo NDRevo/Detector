@@ -19,8 +19,7 @@ struct HomeView: View {
     var body: some View {
         VStack {
             CheckBoxesView(detectHumanCM: $viewModel.detectHumanCM, detectAnimalCM: $viewModel.detectAnimalCM)
-
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading) {
 
                 FolderPathView(folderPath: $viewModel.sourceFolderPath, titlePathName: "Source Folder Path")
 
@@ -33,7 +32,7 @@ struct HomeView: View {
                                    titlePathName: "Destination Folder Path")
                 }
             }
-            .padding()
+            .padding(.horizontal)
             .animation(.default, value: viewModel.createFolderInSourcePath)
 
             Button {
@@ -44,9 +43,13 @@ struct HomeView: View {
                                                  viewModel.detectHumanCM, viewModel.detectAnimalCM)
             } label: {
                 Text("Detect Images")
+                    .padding(8)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                   
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.blue)
+            .buttonStyle(.borderless)
             .animation(.linear, value: viewModel.createFolderInSourcePath)
 
             Spacer()
@@ -66,27 +69,66 @@ struct CheckBoxesView: View {
 
     @Binding var detectHumanCM: Bool
     @Binding var detectAnimalCM: Bool
+    
+    //Fix
+    @State var humanButtonTapped: Bool = false
+    @State var animalButtonTapped: Bool = false
 
     var body: some View {
         HStack(alignment: .center){
             Spacer()
-            Toggle(isOn: $detectHumanCM) {
-                Text("Detect Humans")
+            Button {
+                detectHumanCM.toggle()
+                humanButtonTapped.toggle()
+            } label: {
+                ZStack(alignment:.center){
+                    RoundedRectangle(cornerRadius: 8)
+                        .frame(width: 100, height: 40)
+                        .foregroundColor(.blue)
+                
+                    HStack{
+                        Image(systemName: humanButtonTapped ? "person.fill" : "person")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 20)
+                            .foregroundColor(.white)
+                        Text("Humans")
+                            .foregroundColor(.white)
+                            .bold()
+                            .strikethrough(!humanButtonTapped)
+                            
+                           
+                    }
+                }
             }
-            .toggleStyle(.checkbox)
-            Toggle(isOn: $detectAnimalCM) {
-                Text("Detect Animals")
+            .buttonStyle(.borderless)
+            
+            Button {
+                detectAnimalCM.toggle()
+                animalButtonTapped.toggle()
+            } label: {
+                ZStack(alignment:.center){
+                    RoundedRectangle(cornerRadius: 8)
+                        .frame(width: 100, height: 40)
+                        .foregroundColor(.blue)
+                
+                    HStack{
+                        Image(systemName: animalButtonTapped ? "pawprint.fill" : "pawprint")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 20)
+                            .foregroundColor(.white)
+                        Text("Animals")
+                            .foregroundColor(.white)
+                            .bold()
+                            .strikethrough(!animalButtonTapped)
+                    }
+                }
             }
-            .toggleStyle(.checkbox)
+            .buttonStyle(.borderless)
             Spacer()
         }
-        .padding()
-        .background {
-            Rectangle()
-                .foregroundColor(Color.secondary)
-                .frame(minHeight: 40)
-        }
-        .frame(minHeight: 40)
+        .padding(.vertical)
     }
 }
 
